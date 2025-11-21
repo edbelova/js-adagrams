@@ -1,13 +1,61 @@
+const DISTRIBUTION_OF_LETTERS = {
+  A: 9, B: 2, C: 2, D: 4, E: 12, F: 2, G: 3, H: 2, I: 9, J: 1, K: 1, L: 4, M: 2,
+  N: 6, O: 8, P: 2, Q: 1, R: 6, S: 4, T: 6, U: 4, V: 2, W: 2, X: 1, Y: 2, Z: 1,
+};
+const SCORE_CHATS = { A: 1, B: 3, C: 3, D: 2, E: 1, F: 4, G: 2, H: 4, I: 1, J: 8, K: 5,
+  L: 1, M: 3, N: 1, O: 1, P: 3, Q: 10, R: 1, S: 1, T: 1, U: 1, V: 4, W: 4, X: 8, Y: 4, Z: 10 };
+const HAND_SIZE = 10;
+const LONG_WORD_MIN_LENGTH = 7;
+const LONG_WORD_BONUS_POINTS = 8;
+
 export const drawLetters = () => {
-  // Implement this method for wave 1
+  let letterPool = buildLetterPool(DISTRIBUTION_OF_LETTERS);
+  let hand = [];
+
+  for (let i = 0; i < HAND_SIZE; i++) {
+    const randomIndex = Math.floor(Math.random() * letterPool.length);
+    const [chosenLetter] = letterPool.splice(randomIndex, 1);
+    hand.push(chosenLetter);
+  }
+
+  return hand;
+};
+
+export const buildLetterPool = (distribution) => {
+  let letterPool = [];
+  for (const [letter, frequency] of Object.entries(distribution)) {
+    for (let i = 0; i < frequency; i++) {
+      letterPool.push(letter);
+    };
+  };
+  return letterPool;
 };
 
 export const usesAvailableLetters = (input, lettersInHand) => {
-  // Implement this method for wave 2
+  let listOfAvailableLetters = [];
+  for (const letter of lettersInHand){
+    listOfAvailableLetters.push(letter.toUpperCase());
+  };
+
+  for (const letter of input.toUpperCase()) {
+    if (listOfAvailableLetters.includes(letter)) {
+      listOfAvailableLetters.splice(listOfAvailableLetters.indexOf(letter), 1);
+    }else {
+      return false;
+    };
+  };
+  return true;
 };
 
 export const scoreWord = (word) => {
-  // Implement this method for wave 3
+  let score = 0;
+  for (const letter of word.toUpperCase()) {
+    score += SCORE_CHATS[letter];
+  };
+  if (word.length >= LONG_WORD_MIN_LENGTH) {
+    score += LONG_WORD_BONUS_POINTS;
+  }
+  return score;
 };
 
 export const highestScoreFrom = (words) => {
